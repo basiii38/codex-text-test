@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Superscribe Text Expander</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <script type="module" src="dashboard.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="branding">
+      <div class="dot"></div>
+      <h1>Superscribe Text Expander</h1>
+    </div>
+    <div class="header-actions">
+      <div class="search-bar">
+        <input id="globalSearch" type="search" placeholder="Search snippets (Ctrl/Cmd + Space)" />
+        <span class="kbd">⌘/Ctrl + Space</span>
+      </div>
+      <button id="themeToggle" class="ghost">Toggle Theme</button>
+      <button id="newSnippet" class="primary">New snippet</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel editor-panel">
+      <div class="panel-header">
+        <h2 id="formTitle">Create snippet</h2>
+        <div class="pill" id="syncStatus">Offline cache only</div>
+      </div>
+      <form id="snippetForm">
+        <label>Name <input required id="title" /></label>
+        <label>Trigger word <input required id="trigger" placeholder=";sig" /></label>
+        <div class="grid-2">
+          <label>Folder <input id="folder" placeholder="Personal" /></label>
+          <label>Tags <input id="tags" placeholder="email, support" /></label>
+        </div>
+        <label>Color label <input type="color" id="color" value="#63d6ab" /></label>
+        <label>Trigger key
+          <select id="triggerKey">
+            <option value="space">Space</option>
+            <option value="tab">Tab</option>
+            <option value="enter">Enter</option>
+          </select>
+        </label>
+        <label>Your name (for {name}) <input id="userName" placeholder="Ada" /></label>
+
+        <div class="toolbar" role="group" aria-label="Formatting">
+          <button type="button" data-command="formatBlock" data-value="h1">H1</button>
+          <button type="button" data-command="formatBlock" data-value="h2">H2</button>
+          <button type="button" data-command="bold">Bold</button>
+          <button type="button" data-command="italic">Italic</button>
+          <button type="button" data-command="underline">Underline</button>
+          <button type="button" data-command="strikeThrough">Strikethrough</button>
+          <button type="button" data-command="createLink">Link</button>
+          <button type="button" data-command="insertUnorderedList">• List</button>
+          <button type="button" data-command="insertOrderedList">1. List</button>
+          <button type="button" id="emojiBtn">😀 Emoji</button>
+        </div>
+        <div id="editor" class="editor" contenteditable="true" aria-label="Snippet body"></div>
+
+        <details class="hint">
+          <summary>Variables</summary>
+          <p>Use {date}, {time}, {clipboard}, {name}, {today+3} style math.</p>
+        </details>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="saveSnippet">Save snippet</button>
+          <button type="button" id="resetForm" class="ghost">Reset</button>
+        </div>
+      </form>
+
+      <section class="panel supabase">
+        <header class="panel-header">
+          <h3>Supabase sync</h3>
+        </header>
+        <div class="grid-2">
+          <label>Project URL <input id="supabaseUrl" placeholder="https://xyz.supabase.co" /></label>
+          <label>Anon Key <input id="supabaseKey" placeholder="public-anon-key" /></label>
+        </div>
+        <div class="grid-2">
+          <label>Email <input id="supabaseEmail" type="email" placeholder="you@example.com" /></label>
+          <label>Password (or use Google sign-in) <input id="supabasePassword" type="password" /></label>
+        </div>
+        <div class="actions">
+          <button id="supabaseSignIn" type="button">Sign in</button>
+          <button id="supabaseSync" type="button">Sync now</button>
+          <button id="supabaseExport" type="button" class="ghost">Export to Supabase</button>
+        </div>
+        <p id="syncLog" class="muted">Not synced yet.</p>
+      </section>
+
+      <section class="panel import-export">
+        <header class="panel-header"><h3>Backup</h3></header>
+        <div class="actions">
+          <button id="exportJson" type="button">Export JSON</button>
+          <button id="exportCsv" type="button">Export CSV</button>
+          <label class="file-btn">Import JSON/CSV <input type="file" id="importFile" accept=".json,.csv" /></label>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel list-panel">
+      <div class="panel-header">
+        <div>
+          <h2>Snippets</h2>
+          <p class="muted">Usage analytics update automatically.</p>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <p>Total</p>
+            <strong id="statTotal">0</strong>
+          </div>
+          <div class="stat">
+            <p>Last sync</p>
+            <strong id="statSync">Never</strong>
+          </div>
+        </div>
+      </div>
+      <div class="list" id="snippetList"></div>
+    </section>
+  </main>
+
+  <template id="snippetTemplate">
+    <article class="snippet">
+      <div class="snippet-header">
+        <div>
+          <p class="muted trigger">Trigger: <span class="trigger-value"></span></p>
+          <h3 class="title"></h3>
+          <p class="meta"></p>
+        </div>
+        <div class="badge"></div>
+      </div>
+      <div class="content-preview"></div>
+      <div class="snippet-actions">
+        <button data-action="edit">Edit</button>
+        <button data-action="duplicate">Duplicate</button>
+        <button data-action="delete" class="danger">Delete</button>
+      </div>
+    </article>
+  </template>
+</body>
+</html>
