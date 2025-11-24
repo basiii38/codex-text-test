@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Superscribe Text Expander",
+  "description": "Full-page visual editor for snippets with Supabase sync and universal expansion.",
+  "version": "0.1.0",
+  "permissions": [
+    "storage",
+    "scripting",
+    "tabs",
+    "activeTab",
+    "clipboardRead"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Open Text Expander"
+  },
+  "options_page": "dashboard.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "128": "icon.png"
+  }
+}
